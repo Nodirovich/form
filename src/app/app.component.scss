@@ -1,0 +1,36 @@
+.main {
+  width: 100%;
+  min-height: 100%;
+  background-color: #22c6f8;
+  padding: 30px 0;
+  h2 {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  .form {
+    width: 100%;
+    background: #fff;
+    box-shadow: 0 0 5px 5px rgba(#000, 0.1);
+    padding: 30px 40px;
+    border-radius: 20px;
+    &__control {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+      &-hint {
+        margin-bottom: 20px;
+      }
+    }
+
+    &__btn {
+      margin-top: 30px;
+      text-align: center;
+      button {
+        transform: scale(1.2);
+        &:not(:disabled) {
+          background: #28a745;
+        }
+      }
+    }
+  }
+}
