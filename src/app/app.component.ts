@@ -42,8 +42,7 @@ export class AppComponent {
     'Промышленность',
     'Сельское хозяйство',
     'Электростанции',
-    'Наука и образование',
-    'Культура и Искусство',
+    'Наука и культура',
   ];
 
   readonly fileMaxSize = 200 * 2 ** 20;
@@ -79,7 +78,7 @@ export class AppComponent {
       },
       {
         label: 'Место работы',
-        hint: 'Название вуза, название факультета, название кафедры',
+        hint: 'Название ВУЗа, название факультета, название кафедры',
         control: 'work',
       },
       {
@@ -112,15 +111,14 @@ export class AppComponent {
         label: 'Файл *',
         type: 'file',
         accept: '.doc, .pdf, .png, .jpg, .xls, ai, .mpg, .mp4, .rar, jpeg',
-        hint: 'Вес данных не должен превышать 200мб',
+        hint: 'Не должен превышать 200мб',
         control: 'file',
         maxSize: this.fileMaxSize,
       },
       {
-        label: 'Навигация *',
+        label: 'Местоположение на карте *',
         type: 'file',
         accept: '.png, .jpg, jpeg',
-        hint: 'Месторасположение – скан карты с расположением метки',
         control: 'navigation',
         maxSize: this.navigationMaxSize,
       },
@@ -143,7 +141,7 @@ export class AppComponent {
   get chronologyList(): number[] {
     const list = [];
     let cur = 1950;
-    while (cur < 2020) {
+    while (cur < 1990) {
       list.push(cur);
       cur += 10;
     }
