@@ -1,0 +1,44 @@
+{
+  "TITLE": "Moderatsiyadan oldingi shakl",
+  "SUBMIT": "Yuborish",
+  "CLOSE": "Yopish",
+  "DIALOG_TITLE": "Ariza yuborish",
+  "DIALOG_CONTENT": "Iltimos, kuting, ariza yuboriladi",
+  "REQUIRED": "Majburiy maydon",
+  "MAX_SIZE": "Ma'lumotlarning vazni {{ maxSizeInMB }}MB dan oshmasligi kerak",
+  "ACCEPTED": "Ko'rib chiqish uchun qabul qilingan",
+  "FILE_TYPE": {
+    "IMG": "Rasm",
+    "TEXT": "Matn",
+    "AUDIO": "Ovoz",
+    "VIDEO": "Video",
+    "DIAGRAM": "Diagramma",
+    "MAP_SCHEME": "Xaritalar sxemasi",
+    "TABLE": "Jadval",
+    "LINK": "Havola"
+  },
+  "LAYER_THEME": {
+    "REGION": "Hududlar",
+    "DISTRICT": "Tumanlar",
+    "POPULATION_CENTERS": "Aholi punktlari",
+    "INDUSTRY": "Sanoat",
+    "AGRICULTURE": "Qishloq xo'jaligi",
+    "POWERHOUSE": "Elektr stantsiyalari",
+    "SCIENCE_CULTURE": "Ilm va madaniyat"
+  },
+  "OPTIONS": {
+    "FIO": "Familiya Ismi Otasining Ismi",
+    "WORK": "Ish joyi",
+    "WORK_HINT": "Universitet nomi, fakultet nomi, kafedra nomi",
+    "POSITION": "Lavozim",
+    "POSITION_HINT": "Qaysi kurs, guruh raqami yoki lavozimi, unvoni",
+    "LAYER_THEME": "Qatlam mavzusini tanlash",
+    "CHRONOLOGY": "Xronologiyani tanlash",
+    "FILE_TYPE": "Ma'lumotlar turlari",
+    "FILE": "Fayl *",
+    "FILE_HINT": "200 MB dan oshmasligi kerak",
+    "NAVIGATION": "Xaritada joylashgan joy *",
+    "PHONE": "Telefon raqami",
+    "EMAIL": "Email"
+  }
+}

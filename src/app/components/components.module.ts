@@ -12,6 +12,7 @@ import { InputComponent } from './input/input.component';
 import { SelectComponent } from './select/select.component';
 import { InputFileComponent } from './input-file/input-file.component';
 import { DialogComponent } from './dialog/dialog.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 const COMPONENTS = [
   InputComponent,
@@ -30,6 +31,7 @@ const COMPONENTS = [
     MatSelectModule,
     NgxMatFileInputModule,
     MatProgressSpinnerModule,
+    TranslateModule,
   ],
   declarations: COMPONENTS,
   exports: COMPONENTS,

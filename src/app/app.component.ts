@@ -2,19 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { catchError, finalize, of, take } from 'rxjs';
+import { Subject, catchError, finalize, of } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { DialogComponent } from './components/dialog/dialog.component';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { IOption, ISelect } from './interfaces';
+import { TranslateService } from '@ngx-translate/core';
 
-export interface IOption {
-  label: string;
-  control: string;
-  hint?: string;
-  type?: string;
-  list?: (string | number)[];
-  accept?: string;
-  maxSize?: number;
-}
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -24,29 +18,43 @@ export interface IOption {
 export class AppComponent {
   readonly select: string = 'select';
 
+  currentLanguage!: string;
+  readonly languages: ISelect[] = [
+    {
+      label: 'Русский',
+      value: 'ru',
+    },
+    {
+      label: ' O’zbekcha ',
+      value: 'uz',
+    },
+  ];
+
   private readonly fileType: string[] = [
-    'Изображение',
-    'Текст',
-    'Аудио',
-    'Видео',
-    'Диаграмма',
-    'Карта-схема',
-    'Таблица',
-    'Ссылка',
+    'FILE_TYPE.IMG',
+    'FILE_TYPE.TEXT',
+    'FILE_TYPE.AUDIO',
+    'FILE_TYPE.VIDEO',
+    'FILE_TYPE.DIAGRAM',
+    'FILE_TYPE.MAP_SCHEME',
+    'FILE_TYPE.TABLE',
+    'FILE_TYPE.LINK',
   ];
 
   private readonly layerTheme: string[] = [
-    'Области',
-    'Районы',
-    'Населенные пункты',
-    'Промышленность',
-    'Сельское хозяйство',
-    'Электростанции',
-    'Наука и культура',
+    'LAYER_THEME.REGION',
+    'LAYER_THEME.DISTRICT',
+    'LAYER_THEME.POPULATION_CENTERS',
+    'LAYER_THEME.INDUSTRY',
+    'LAYER_THEME.AGRICULTURE',
+    'LAYER_THEME.POWERHOUSE',
+    'LAYER_THEME.SCIENCE_CULTURE',
   ];
 
   readonly fileMaxSize = 200 * 2 ** 20;
   readonly navigationMaxSize = 10 * 2 ** 20;
+
+  private _destroy$ = new Subject<boolean>();
 
   options: IOption[];
   form: FormGroup;
@@ -54,7 +62,8 @@ export class AppComponent {
     private readonly fb: FormBuilder,
     private http: HttpClient,
     private dialog: MatDialog,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private translate: TranslateService
   ) {
     this.form = this.fb.group({
       fio: ['', Validators.required],
@@ -71,78 +80,107 @@ export class AppComponent {
 
     this.options = [
       {
-        label: 'Фамилия Имя Отчество',
+        label: 'OPTIONS.FIO',
         hint: '',
         type: '',
         control: 'fio',
       },
       {
-        label: 'Место работы',
-        hint: 'Название ВУЗа, название факультета, название кафедры',
+        label: 'OPTIONS.WORK',
+        hint: 'OPTIONS.WORK_HINT',
         control: 'work',
       },
       {
-        label: 'Должность',
-        hint: 'Какой курс, номер группы или должность, звание',
+        label: 'OPTIONS.POSITION',
+        hint: 'OPTIONS.POSITION_HINT',
         type: '',
         control: 'position',
       },
       {
-        label: 'Выбор темы слоя',
+        label: 'OPTIONS.LAYER_THEME',
         type: this.select,
         list: this.layerTheme,
         control: 'layerTheme',
       },
       {
-        label: 'Выбор хронологии',
-        hint: '',
+        label: 'OPTIONS.CHRONOLOGY',
         type: this.select,
         control: 'chronology',
         list: this.chronologyList,
       },
       {
-        label: 'Тип данных',
-        hint: '',
+        label: 'OPTIONS.FILE_TYPE',
         type: this.select,
         control: 'fileType',
         list: this.fileType,
       },
       {
-        label: 'Файл *',
+        label: 'OPTIONS.FILE',
         type: 'file',
         accept: '.doc, .pdf, .png, .jpg, .xls, ai, .mpg, .mp4, .rar, jpeg',
-        hint: 'Не должен превышать 200мб',
+        hint: 'OPTIONS.FILE_HINT',
         control: 'file',
         maxSize: this.fileMaxSize,
       },
       {
-        label: 'Местоположение на карте *',
+        label: 'OPTIONS.NAVIGATION',
         type: 'file',
         accept: '.png, .jpg, jpeg',
         control: 'navigation',
         maxSize: this.navigationMaxSize,
       },
       {
-        label: 'Номер телефона',
+        label: 'OPTIONS.PHONE',
         type: 'phone',
         control: 'phone',
       },
       {
-        label: 'Email',
+        label: 'OPTIONS.EMAIL',
         control: 'email',
       },
     ];
+  }
+
+  ngOnInit(): void {
+    this.prepareLanguage();
+    this.prepareForm();
+
+    this.form.valueChanges
+      .pipe(takeUntil(this._destroy$))
+      .subscribe((value) => {
+        const { navigation, file, ...data } = value;
+        localStorage.setItem('formData', JSON.stringify(data));
+      });
+  }
+
+  ngOnDestroy(): void {
+    this._destroy$.next(true);
+    this._destroy$.complete();
+  }
+
+  private prepareLanguage(): void {
+    const lang = localStorage.getItem('lang') || 'ru';
+    this.translate.setDefaultLang(lang);
+    this.currentLanguage = this.translate.defaultLang;
+  }
+
+  private prepareForm(): void {
+    const formData = localStorage.getItem('formData');
+    if (formData) {
+      this.form.patchValue(JSON.parse(formData));
+    }
   }
 
   get controls() {
     return this.form.controls;
   }
 
-  get chronologyList(): number[] {
+  get chronologyList(): string[] {
     const list = [];
     let cur = 1950;
     while (cur < 1990) {
-      list.push(cur);
+      const value = cur + '';
+      list.push(value);
       cur += 10;
     }
     return list;
@@ -157,9 +195,11 @@ export class AppComponent {
       const titles = this.prepareLabels();
 
       for (const key in data) {
-        let value = data[key];
+        let value: string | Blob = data[key];
         if (typeof data[key] !== 'object') {
-          value = `${titles[key]}: ${data[key]}`;
+          const label: string = this.translate.instant(titles[key]);
+          const userValue = this.translate.instant(data[key]);
+          value = `${label}: ${userValue}`;
         }
         formData.append(key, value);
       }
@@ -167,7 +207,7 @@ export class AppComponent {
       this.http
         .post('https://nodemailer-ser.herokuapp.com/api/email', formData)
         .pipe(
-          take(1),
+          takeUntil(this._destroy$),
           catchError((error) => {
             const options: MatSnackBarConfig<any> = {
               panelClass: 'error',
@@ -183,7 +223,7 @@ export class AppComponent {
           })
         )
         .subscribe((res: any) => {
-          const title = 'Принято к рассмотрению!';
+          const title = this.translate.instant('ACCEPTED');
           const options: MatSnackBarConfig<any> = {
             panelClass: 'success',
             horizontalPosition: 'center',
@@ -191,6 +231,7 @@ export class AppComponent {
           };
           if (res.success) {
             this.form.reset();
+            localStorage.removeItem('formData');
             this.openSnackBar(title, options);
           }
         });
@@ -209,13 +250,20 @@ export class AppComponent {
     const dialogRef = this.dialog.open(DialogComponent, {
       disableClose: true,
     });
-    dialogRef.afterClosed().pipe(take(1)).subscribe();
+    dialogRef.afterClosed().pipe(takeUntil(this._destroy$)).subscribe();
   }
   private closeDialog(): void {
     this.dialog.closeAll();
   }
 
   private openSnackBar(title: string, options: MatSnackBarConfig<any>): void {
-    this._snackBar.open(title, 'Закрыть', options);
+    const actionText = this.translate.instant('CLOSE');
+    this._snackBar.open(title, actionText, options);
+  }
+
+  setLanguage({ value }: ISelect): void {
+    this.translate.use(value);
+    this.currentLanguage = value;
+    localStorage.setItem('lang', value);
   }
 }

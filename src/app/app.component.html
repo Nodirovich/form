@@ -2,52 +2,81 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-8 offset-lg-2">
-        <form class="form" [formGroup]="form">
-          <h2>Форма пред-модерации</h2>
-          <ng-container *ngFor="let option of options">
-            <ng-container [ngSwitch]="option.type">
-              <app-select
-                *ngSwitchCase="select"
-                class="form__control"
-                [label]="option.label"
-                [options]="option.list || []"
-                [control]="$any(controls[option.control])"
-              >
-              </app-select>
-
-              <app-input-file
-                *ngSwitchCase="'file'"
-                class="form__control"
-                [label]="option.label"
-                [accept]="option.accept"
-                [maxSize]="option.maxSize || fileMaxSize"
-                [hint]="option.hint"
-                [control]="$any(controls[option.control])"
-              ></app-input-file>
-
-              <app-input
-                *ngSwitchDefault
-                class="form__control"
-                [ngClass]="{ 'form__control-hint': option.hint }"
-                [label]="option.label"
-                [type]="option.type || 'text'"
-                [control]="$any(controls[option.control])"
-                [hint]="option.hint"
-              ></app-input>
-            </ng-container>
-          </ng-container>
-
-          <div class="form__btn">
-            <button
-              mat-raised-button
-              color="primary"
-              [disabled]="form.invalid"
-              (click)="onSubmit($event)"
-            >
-              Отправить
+        <div class="form">
+          <div class="form__header">
+            <h2>{{ "TITLE" | translate }}</h2>
+            <button mat-button [matMenuTriggerFor]="menu">
+              <svg class="icon icon-ic_{{ currentLanguage }}">
+                <use
+                  [attr.xlink:href]="
+                    '/assets/images/sprite.svg#ic_' + currentLanguage
+                  "
+                ></use>
+              </svg>
             </button>
+            <mat-menu #menu="matMenu">
+              <button
+                *ngFor="let language of languages"
+                mat-menu-item
+                (click)="setLanguage(language)"
+              >
+                <svg class="me-1 icon icon-ic_{{ language.value }}">
+                  <use
+                    [attr.xlink:href]="
+                      '/assets/images/sprite.svg#ic_' + language.value
+                    "
+                  ></use>
+                </svg>
+                {{ language.label }}
+              </button>
+            </mat-menu>
           </div>
-        </form>
+          <form [formGroup]="form">
+            <ng-container *ngFor="let option of options">
+              <ng-container [ngSwitch]="option.type">
+                <app-select
+                  *ngSwitchCase="select"
+                  class="form__control"
+                  [label]="option.label"
+                  [options]="option.list"
+                  [control]="$any(controls[option.control])"
+                >
+                </app-select>
+
+                <app-input-file
+                  *ngSwitchCase="'file'"
+                  class="form__control"
+                  [label]="option.label"
+                  [accept]="option.accept"
+                  [maxSize]="option.maxSize || fileMaxSize"
+                  [hint]="option.hint"
+                  [control]="$any(controls[option.control])"
+                ></app-input-file>
+
+                <app-input
+                  *ngSwitchDefault
+                  class="form__control"
+                  [ngClass]="{ 'form__control-hint': option.hint }"
+                  [label]="option.label"
+                  [type]="option.type || 'text'"
+                  [control]="$any(controls[option.control])"
+                  [hint]="option.hint"
+                ></app-input>
+              </ng-container>
+            </ng-container>
+
+            <div class="form__btn">
+              <button
+                mat-raised-button
+                color="primary"
+                [disabled]="form.invalid"
+                (click)="onSubmit($event)"
+              >
+                {{ "SUBMIT" | translate }}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>

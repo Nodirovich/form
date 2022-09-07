@@ -10,7 +10,7 @@ export class SelectComponent implements OnInit {
   @Input() label!: string;
   @Input() control!: FormControl;
   @Input() hint!: string;
-  @Input() options!: (number | string)[];
+  @Input() options!: string[] | undefined;
 
   constructor() {}
 

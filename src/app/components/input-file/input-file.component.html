@@ -1,5 +1,5 @@
 <mat-form-field appearance="fill">
-  <mat-label>{{ label }}</mat-label>
+  <mat-label>{{ label | translate }}</mat-label>
   <ngx-mat-file-input
     [formControl]="control"
     [multiple]="multiple"
@@ -8,12 +8,15 @@
   >
   </ngx-mat-file-input>
 
-  <mat-hint *ngIf="hint">{{ hint }}</mat-hint>
+  <mat-hint *ngIf="hint">{{ hint | translate }}</mat-hint>
 
   <mat-error *ngIf="control.hasError('required')">
-    Обязательное поле
+    {{ "REQUIRED" | translate }}
   </mat-error>
-  <mat-error *ngIf="control.hasError('overSize')">
-    Вес данных не должен превышать {{ maxSizeInMB }}мб
+  <mat-error
+    *ngIf="control.hasError('overSize')"
+    [translate]="'MAX_SIZE'"
+    [translateParams]="{maxSizeInMB}"
+  >
   </mat-error>
 </mat-form-field>
